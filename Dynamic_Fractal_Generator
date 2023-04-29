@@ -1,0 +1,70 @@
+"
+
+
+```python
+import turtle
+import random
+
+# Define the Artist class to draw fractals
+class Artist:
+    def __init__(self, pos, angle, ttl):
+        self.pos = pos
+        self.angle = angle
+        self.ttl = ttl
+
+    def forward(self, dist):
+        x1, y1 = self.pos
+        x2, y2 = x1 + dist * (turtle.cos(self.angle)), y1 + dist * (turtle.sin(self.angle))
+        turtle.up()
+        turtle.goto(x1, y1)
+        turtle.down()
+        turtle.goto(x2, y2)
+        self.pos = (x2, y2)
+
+    def rotate(self, angle):
+        self.angle += angle
+
+# Generate a random fractal system
+def random_fractal_system():
+    symbols = ['+', '-', 'F', '[', ']']
+    rule = ''.join(random.choices(symbols, k=10))
+    return {'F': rule}
+
+def draw_fractal(artist, tasks, rules, depth):
+    if depth == 0:
+        artist.forward(1)
+    else:
+        for task in tasks:
+            for symbol in task:
+                if symbol in rules:
+                    draw_fractal(artist, rules[symbol], rules, depth - 1)
+                elif symbol == 'F':
+                    artist.forward(1)
+                elif symbol == '+':
+                    artist.rotate(random.randint(-60, -30))
+                elif symbol == '-':
+                    artist.rotate(random.randint(30, 60))
+                elif symbol == '[':
+                    mem_pos = artist.pos
+                    mem_angle = artist.angle
+                    draw_fractal(artist, rules['F'], rules, depth - 1)
+                    artist.pos = mem_pos
+                    artist.angle = mem_angle
+                elif symbol == ']':
+                    mem_pos = artist.pos
+                    mem_angle = artist.angle
+                    draw_fractal(artist, rules['F'], rules, depth - 1)
+                    artist.angle = mem_angle
+
+def main():
+    turtle.speed(0)
+    artist = Artist((0, 0), 0, turtle)
+    rules = random_fractal_system()
+    print(""Fractal rule:"", rules)
+    draw_fractal(artist, ['F'], rules, 5)
+    turtle.mainloop()
+
+if __name__ == '__main__':
+    main()
+```
+"
